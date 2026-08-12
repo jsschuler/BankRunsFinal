@@ -6,3 +6,13 @@
 .DS_Store
 .Rhistory
 .RData
+
+# Generated/data artifacts: keep the repo to source (Rnw/R/Julia code).
+# Reproduce these locally via the documented run/build commands instead
+# of tracking them in git.
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.csv
+!test/fixtures/recovery_trials.csv
