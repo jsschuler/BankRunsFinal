@@ -533,12 +533,16 @@ Reconciled 2026-08-12 against actual run-directory and repository state:
 5. Consider off-grid TPE proposals as an optional extension, not a
    prerequisite for the frozen confirmatory analysis. Still optional/open,
    not started.
-6. Reconcile paper terminology and reported replication counts. **Largely
-   done** — the 2026-07-25 "referee-proofing revision" (see
+6. Reconcile paper terminology and reported replication counts. **Done** —
+   the 2026-07-25 "referee-proofing revision" (see
    `docs/PAPER_REVISION_LOG_20260724.md`) standardized terminology across the
-   theorem, bridge model, and network results and reduced the manuscript from
-   59 to 58 pages. Worth a final targeted read-through rather than a full
-   pass.
+   theorem, bridge model, and network results. The literature-additions and
+   2023 MMF-reform gaps this reconciliation found on 2026-08-12 (Ennis &
+   Keister uncited, Iyer & Puri / He & Manela / Jacklin 1987 / Angeletos &
+   Werning missing entirely, and no discussion of the 2023 SEC reform) are
+   now closed — all citations verified against AEA/JF/EconPapers/SEC primary
+   sources and added to `paper_revision/paper.Rnw`, manuscript rebuilds clean
+   at 61 pages.
 7. Commit the repository, create the GitHub remote, and push only after
    review. **Partially done** — initial commit `3cbe7c0` made 2026-08-12.
    GitHub remote and push are still outstanding and should only happen after
