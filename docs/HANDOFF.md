@@ -1,8 +1,10 @@
 # BankRunsFinal handoff
 
-Last updated: 2026-07-24
+Last updated: 2026-08-12 (reconciled against actual run-directory state; prior
+version below was last edited 2026-07-24 and had fallen behind the monotonicity
+stage completing)
 
-## Sign-off status: confirmatory frozen; monotonicity runner validated
+## Sign-off status: confirmatory and monotonicity both executed, merged, and frozen
 
 The staged network run is currently:
 
@@ -13,10 +15,19 @@ coverage: 141,120 / 141,120, merged and frozen
 adaptive batch 1: 150,000 / 150,000, merged and frozen
 confirmatory selection: 80 learned cells, frozen
 confirmatory execution: 96,000 / 96,000, merged and frozen
-monotonicity implementation: complete and tested
-monotonicity production design: not yet prepared or frozen
-monotonicity execution: 0 / 39,600
+monotonicity design: prepared and frozen (6 structures x 11 settings x 200
+  replications = 39,600 jobs; DESIGN_FROZEN recorded 2026-07-24)
+monotonicity execution: 39,600 / 39,600, merged and frozen
+network analysis tables: generated in output/network_analysis_seed20260723/
+  (confirmatory_cell_summary.csv, monotonicity_cell_summary.csv,
+  monotonicity_hypotheses.csv, validation_summary.csv, integrity_report.txt)
+paper integration: paper_revision/paper.tex cites the 39,600 monotonicity jobs
+  and the prespecified monotonicity design directly (rebuilt 2026-07-25)
 ```
+
+Verified 2026-08-12 by inspecting `runs/network_20260723/monotonicity/FROZEN`
+(`jobs=39600`) and `results.csv` (39,600 data rows), not by running the CLI
+`status` subcommand — see "Known issue: source fingerprint" below.
 
 The confirmatory merge passed integrity checks: 96,000 unique job IDs, all 80
 selected structural cells, 400 replications for each of the three decision
@@ -110,10 +121,11 @@ runs/network_20260723/initial_conditions/results_cells.csv
 runs/network_20260723/initial_conditions/results_report.md
 ```
 
-### Next commands
+### Next commands (historical — completed 2026-07-24/25)
 
-After signing in, adopt the tested monotonicity runner source fingerprint,
-materialize the prespecified design and hypotheses, and freeze them:
+The commands below were the plan of record when this section was last
+written; they have since been run to completion and are kept here only as a
+record of how the frozen monotonicity design and run were produced.
 
 ```sh
 julia --project=. scripts/network_experiment.jl \
@@ -124,23 +136,35 @@ julia --project=. scripts/network_experiment.jl \
   freeze-monotonicity-design runs/network_20260723
 ```
 
-Inspect `runs/network_20260723/monotonicity/design.csv`,
-`hypotheses.csv`, and `DESIGN_FROZEN`, then launch:
-
 ```sh
 nohup julia --project=. scripts/network_experiment.jl \
   run monotonicity runs/network_20260723 \
   --workers 16 \
   --replications 200 \
   > runs/network_20260723/monotonicity-run.log 2>&1 &
+julia --project=. scripts/network_experiment.jl \
+  merge monotonicity runs/network_20260723
+julia --project=. scripts/network_experiment.jl \
+  freeze monotonicity runs/network_20260723
 ```
-
-The 39,600-job run is estimated at approximately 1.5 hours by proportional
-scaling from confirmatory execution; allow 1.5–2.5 wall-clock hours for startup
-and runtime-tail imbalance.
 
 Detailed diagnostic findings and design decisions are recorded in
 `docs/IMPLEMENTATION_LOG.md`.
+
+### Known issue: source fingerprint mismatch on the CLI `status` command
+
+Running `julia --project=. scripts/network_experiment.jl status
+runs/network_20260723` currently errors with a "source fingerprint mismatch"
+(recorded `497dc799...` vs. current `ac188624...`). `source_fingerprint()`
+hashes every file in `src/*.jl` plus `network_experiment.jl`, `Project.toml`,
+and `Manifest.toml` — not just the network-model files. Src files unrelated
+to the network stage (e.g. `src/bridge.jl`, `src/dd.jl`) were edited during
+the later DD overnight-sweep work on 2026-07-24/25, after the monotonicity
+stage was frozen, which changed the aggregate hash. This does not affect the
+integrity of the frozen monotonicity/confirmatory data (verified directly via
+the `FROZEN` markers and row counts above); it only means the live status/
+resume commands need a fresh `adopt-*` fingerprint migration before they can
+be run again against this run directory.
 
 ## Repository
 
@@ -150,8 +174,9 @@ Location:
 /Users/l25-n05917-res/ResearchCode/BankRunsFinal
 ```
 
-This is a new local Git repository intended to become the public replication
-repository. It has not been committed, connected to a GitHub remote, or pushed.
+This is a local Git repository intended to become the public replication
+repository. The initial commit was made 2026-08-12 (`3cbe7c0`). It is not yet
+connected to a GitHub remote and has not been pushed.
 
 The original repositories remain unchanged:
 
@@ -488,13 +513,41 @@ realizations.
 
 ## Remaining work
 
-1. Adopt the validated runner migration, prepare, inspect, and freeze the
-   prespecified monotonicity design.
-2. Run, merge, validate, and freeze the 39,600-job monotonicity sweep.
-3. Generate confirmatory and monotonicity tables, uncertainty intervals, and
-   figure-reproduction scripts.
-4. Add optional trial-level paired recovery output for diagnostic runs.
-5. Consider off-grid TPE proposals as an optional extension, not a prerequisite
-   for the frozen confirmatory analysis.
-6. Reconcile paper terminology and reported replication counts.
-7. Commit the repository, create the GitHub remote, and push only after review.
+Reconciled 2026-08-12 against actual run-directory and repository state:
+
+1. ~~Adopt the validated runner migration, prepare, inspect, and freeze the
+   prespecified monotonicity design.~~ Done — `DESIGN_FROZEN` recorded
+   2026-07-24, 39,600 jobs, SHA-256 hashes on design and hypotheses.
+2. ~~Run, merge, validate, and freeze the 39,600-job monotonicity sweep.~~
+   Done — `runs/network_20260723/monotonicity/FROZEN` records `jobs=39600`;
+   `results.csv` has 39,600 data rows.
+3. ~~Generate confirmatory and monotonicity tables, uncertainty intervals, and
+   figure-reproduction scripts.~~ Done — `scripts/prepare_network_analysis.jl`
+   produced `output/network_analysis_seed20260723/`, and
+   `paper_revision/paper.tex` cites the monotonicity job counts and design
+   directly (rebuilt 2026-07-25).
+4. Add optional trial-level paired recovery output for diagnostic runs. **Not
+   done.** `src/bridge.jl` implements trial-level classification for the DD
+   bridge model, but no equivalent diagnostic output exists for the network
+   stage; still open if wanted.
+5. Consider off-grid TPE proposals as an optional extension, not a
+   prerequisite for the frozen confirmatory analysis. Still optional/open,
+   not started.
+6. Reconcile paper terminology and reported replication counts. **Largely
+   done** — the 2026-07-25 "referee-proofing revision" (see
+   `docs/PAPER_REVISION_LOG_20260724.md`) standardized terminology across the
+   theorem, bridge model, and network results and reduced the manuscript from
+   59 to 58 pages. Worth a final targeted read-through rather than a full
+   pass.
+7. Commit the repository, create the GitHub remote, and push only after
+   review. **Partially done** — initial commit `3cbe7c0` made 2026-08-12.
+   GitHub remote and push are still outstanding and should only happen after
+   explicit review/approval.
+
+New item surfaced during this reconciliation:
+
+8. The `network_experiment.jl status`/resume commands currently fail with a
+   source-fingerprint mismatch against `runs/network_20260723` (see "Known
+   issue" above). Not a data-integrity problem, but anyone who wants to run
+   `status` or extend this run directory will need to run the appropriate
+   `adopt-*` fingerprint migration first.
