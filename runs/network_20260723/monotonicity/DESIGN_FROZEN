@@ -1,0 +1,7 @@
+run_seed=20260723
+design_sha256=054db09b501001fe49ebcae455846575de4c1f3ed9271df267c41539b5c39556
+hypotheses_sha256=3256387b25480f403ddf4481556302c5050bf56600ffd0c40b345f096814e5c4
+structures=6
+settings_per_structure=11
+replications=200
+jobs=39600

@@ -1,0 +1,8 @@
+/output/
+*.jld2
+*.log
+*.out
+*.err
+.DS_Store
+.Rhistory
+.RData

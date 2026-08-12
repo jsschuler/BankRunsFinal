@@ -1,0 +1,10 @@
+agent_count = 1000
+baseline_withdrawal_probability = 0.02
+execution_model = "large_sparse"
+julia_version = "1.11.3"
+reserve_ratios = [0.2, 0.3, 0.4]
+run_seed = "20260723"
+selected_decision_draws = 500
+shock_locations = ["random", "localized"]
+shock_sizes = [1, 10]
+source_fingerprint = "497dc799578753d97bb530b9e85da584b865b8baf0588220b8084494d84558cd"

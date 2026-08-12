@@ -1,0 +1,5 @@
+scenario,trial_index,trial_seed,withdraw_payment,stay_payment,full_claim
+baseline,1,101,10.0,0.0,10.0
+baseline,2,102,4.0,6.0,10.0
+baseline,3,103,0.0,10.0,10.0
+baseline,4,104,12.0,3.0,10.0

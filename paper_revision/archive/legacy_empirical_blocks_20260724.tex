@@ -1,0 +1,438 @@
+% Legacy empirical blocks extracted from paper.Rnw on 2026-07-24.
+% These passages describe superseded simulation designs and are not compiled.
+
+% ===== Legacy block 1 =====
+\subsection{Simulation Architecture}
+
+Because the network simulation uses the behavioral approximation $p_W > p_S$
+rather than the exact CRRA threshold, the reported run probabilities should be
+interpreted as comparative rather than calibrational. Absolute levels
+would generally change under the utility-exact cutoff
+(equation~\eqref{eq:generalcond}):
+%
+\[
+  p_S \;\leq\; p_W\,p^*(\rho,\,R).
+\]
+The relevant findings are directional: how reserve adequacy, local
+degree, shortcut structure, and insurance coverage affect cascade
+susceptibility under a common local-information decision rule.
+The Stochastic DD Simulation premium sweep provides complementary evidence on the
+bridge theorem itself, where the decision rule is the exact CRRA
+threshold and the results can be interpreted calibrationally.
+
+The network-contagion model is implemented as an agent-based simulation
+with $K = 1{,}000$ agents, deposits drawn from
+$\mathrm{LogNormal}(\mu, \sigma)$, and a Newman--Watts--Strogatz
+(NWS) network \citep{newman1999renormalization} parameterized by ring
+degree $k$ and shortcut probability $p_{\rm ws}$. The simulation sweeps
+over reserve ratios $r \in \{0.2,\, 0.4\}$, insurance quantiles
+$q \in \{0.1,\, 0.2,\, 0.3,\, 0.4\}$, ring degrees $k \in \{6,\, 10,\, 50\}$,
+and shortcut probabilities $p_{\rm ws} \in \{0.05,\, 0.15\}$. Each
+parameter combination is replicated across 50 independent seeds and
+10 activation-order draws per seed, yielding 24{,}000 total runs.
+The outcome of each run is whether the bank exhausted its reserves
+before all depositors were served.
+
+The Stochastic DD Simulation (Section~\ref{sec:process}) provides complementary
+evidence on the bridge theorem: it sweeps the insurance premium
+$\varepsilon$ over $[0,\, 0.6]$ with $K = 50$ agents, CRRA parameter
+$\rho = 1$, and depth-100 Monte Carlo draws per decision.
+
+A convergence study validates the $K = 50$ parameterization by
+running 15 parameter tuples spanning $\texttt{failProb} \in [0.01,\,
+0.97]$ at $K \in \{50,\, 100,\, 200\}$. The model converges to two
+distinct limits as $K$ grows, consistent with Diamond--Dybvig theory:
+large $K$ concentrates the Binomial draw, driving the system toward a
+pure equilibrium. Below the threshold ($\texttt{objP} \leq 0.20$),
+\texttt{failProb} decreases toward zero as $K$ increases; above it
+($\texttt{objP} \geq 0.25$), \texttt{failProb} converges to one.
+The $K = 50$ model is noisiest near the threshold
+($\texttt{objP} \approx 0.20$--$0.25$), where both equilibria remain
+reachable---precisely the region of interest for studying the
+premium's effect on equilibrium selection. Results on both sides of
+the threshold converge in the correct direction, confirming that
+$K = 50$ is not an arbitrary choice but an intentional placement in
+the interior regime.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/fig1_arex_small.pdf}
+\caption{\textit{Small-premium sweep.} Stochastic DD Simulation run probability
+as a function of the insurance premium $\varepsilon \in [0,\,0.10]$,
+for four values of the exogenous shock rate $p_0$.
+Each point is the mean \texttt{failProb} across 1{,}000 replications
+and $R \in \{0.50,\, 0.55,\, 0.60\}$ (averaged; $R$ has no effect on
+run probability at this scale).
+This sweep was designed to test the bridge theorem prediction
+(Theorem~\ref{thm:bridge}): as $\varepsilon \to 0$, endogenous panic
+runs should vanish, leaving only failures driven by exogenous
+liquidity shocks.
+At $\varepsilon = 0$, run probability is zero for $p_0 \leq 0.5$
+and positive only at $p_0 = 0.8$, where the exogenous shock rate
+alone is sufficient to exhaust reserves.
+Run probability rises from zero and is strictly increasing in
+$\varepsilon$ for every shock rate, consistent with both
+Proposition~\ref{prop:upslope} and the bridge theorem limit.}
+\label{fig:arex_small}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/fig2_arex_main.pdf}
+\caption{\textit{Main sweep.} Stochastic DD Simulation run probability as a
+function of the insurance premium $\varepsilon \in [0.50,\, 0.60]$.
+This sweep was designed to test Proposition~\ref{prop:upslope} at
+premium levels that are large relative to the asset return---the
+regime in which the DD optimal contract operates and in which the
+option exercise mechanism is at full strength.
+At $\varepsilon = 0.50$, run probability at $p_0 = 0.25$ is $43\%$,
+rising to $100\%$ for $p_0 \geq 0.35$; the upward slope in
+$\varepsilon$ persists across all shock rates, confirming the
+monotonicity result.
+Comparing Figures~\ref{fig:arex_small} and~\ref{fig:arex_main}
+illustrates the quantitative gulf between the two regimes: at
+$p_0 = 0.25$, the same $0.10$-unit increase in $\varepsilon$
+produces a $38.7$ percentage-point rise in run probability here,
+versus zero in Figure~\ref{fig:arex_small}. The DD optimal contract
+operates deep in this high-run-probability region.}
+\label{fig:arex_main}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/fig3_network.pdf}
+\caption{Replacement model: run probability by ring degree $k$ and
+deposit insurance quantile $q$, at reserve ratio $r = 0.4$.
+Each point is the fraction of simulation runs ending in bank
+insolvency, pooled over shortcut probabilities
+$p_{\rm ws} \in \{0.05,\, 0.15\}$. At $r = 0.2$ (not shown), run
+probability exceeds 0.97 across all $(k,\, q)$ combinations; the
+$r = 0.4$ panel isolates the network and insurance effects.
+Run probability is decreasing in $k$ (information-quality channel)
+and modestly decreasing in $q$ (insurance coverage channel).}
+\label{fig:network}
+\end{figure}
+
+\subsection{Key Results}
+
+\paragraph{Reserve adequacy is the primary determinant of run
+probability.}
+At $r = 0.2$ (20\% reserves), the run rate is 98.8\% across all
+network configurations and insurance settings---the bank is
+undercapitalized and fails in almost every activation-order draw
+regardless of depositor network structure. At $r = 0.4$ (40\%
+reserves), the overall run rate falls to 63.2\%, and meaningful
+variation across network parameters emerges. Table~\ref{tab:reserve_k}
+reports run rates by reserve ratio and ring degree at this threshold.
+Figure~\ref{fig:network} plots the joint effect of $k$ and the
+insurance quantile $q$ at $r = 0.4$.
+
+\begin{table}[ht]
+\centering
+\caption{Run probability by reserve ratio and network degree $k$}
+\label{tab:reserve_k}
+\begin{tabular}{lcccc}
+\hline\hline
+ & \multicolumn{3}{c}{Ring degree $k$} & \\
+\cline{2-4}
+Reserve ratio $r$ & 6 & 10 & 50 & Overall \\
+\hline
+0.2 & 0.995 & 0.992 & 0.978 & 0.988 \\
+0.4 & 0.785 & 0.676 & 0.436 & 0.632 \\
+\hline\hline
+\end{tabular}
+\smallskip
+
+\small\textit{Note}: Each cell is the fraction of simulation runs ending
+in bank insolvency. 4{,}000 runs per cell. NWS network,
+$K = 1{,}000$ agents, $p_{\rm ws} \in \{0.05, 0.15\}$ pooled.
+\end{table}
+
+\paragraph{Connectivity has ambiguous effects in principle.}
+In models of balance-sheet contagion---where interbank claims or
+asset-fire-sale spillovers transmit distress directly---additional
+links amplify risk through an \emph{exposure channel}: each new
+connection is a new pathway for failure to propagate
+\citep{allen2000financial, acemoglu2015systemic}. In models where
+links carry signals rather than financial claims, an opposing
+\emph{information-quality channel} operates: a larger neighborhood
+yields a more representative local sample, reducing the probability
+of false cascades triggered by idiosyncratic local signals. Which
+channel dominates depends on whether network links carry direct
+claims or merely observational access. The present model isolates
+the information channel by construction---agents observe withdrawal
+behavior but hold no interbank claims. The results below therefore
+do not assert a universal law that denser depositor networks are
+always safer; they identify the information-quality effect that
+operates when links are purely informational.
+
+\paragraph{Network degree reduces cascade risk through information
+quality.}
+Consistent with the information-quality channel, run probability
+falls monotonically as the ring degree $k$ increases: from 78.5\%
+at $k = 6$ to 67.6\% at $k = 10$ to 43.6\% at $k = 50$ (at
+$r = 0.4$). Recall that each agent uses their local neighborhood as
+a sample of the global withdrawal rate
+(equation~\eqref{eq:localrate}). A larger $k$ provides a larger
+local sample, reducing sampling variance around the true global
+rate. When sampling variance is high (small $k$), agents in
+clusters experiencing above-average local withdrawals substantially
+overestimate the global rate, triggering premature cascades. When
+sampling variance is low (large $k$), local and global rates align
+more closely, and cascades only propagate when withdrawals are
+genuinely widespread.
+
+\paragraph{Deposit insurance coverage has diminishing returns under
+adequate reserves.}
+At $r = 0.2$, the insurance quantile has essentially no effect on
+run probability (range: 98.3\%--99.2\%). At $r = 0.4$, raising $q$
+from 0.1 to 0.4 reduces the run rate from 66.2\% to 59.4\%---a 6.8
+percentage point reduction. The effect is modest because the
+marginal insured depositors at higher quantiles have below-median
+deposits and are therefore less likely to be pivotal in triggering
+cascades; the uninsured subgraph that drives cascade dynamics is
+only weakly sensitive to moderate changes in the insurance
+threshold.
+
+\paragraph{Shortcut structure has second-order and non-monotone
+effects.}
+The shortcut probability $p_{\rm ws}$ has small average effects
+(0.806 at $p_{\rm ws} = 0.05$ versus 0.814 at $p_{\rm ws} = 0.15$),
+but its sign depends on the ring degree: at $k = 6$, adding shortcuts
+raises the run rate (0.880 to 0.900); at $k = 50$, it lowers it
+(0.727 to 0.687). This sign reversal illustrates how the two
+channels can operate simultaneously at different points in the
+parameter space. At low $k$, where local neighborhoods are small
+and sampling variance is high, shortcuts create long-range
+contagion paths that allow cascade-initiating clusters to infect
+distant agents before their signals are corrected---the exposure
+channel dominates. At high $k$, where each agent already observes
+many neighbors and sampling variance is low, shortcuts add
+informational redundancy that slightly improves sample
+representativeness---the information-quality channel dominates and
+reverses the sign. The transition between regimes is not a
+discontinuity; it reflects the relative magnitudes of variance
+reduction and propagation acceleration as $k$ changes. Models
+that include only one channel will mispredict the sign of
+connectivity effects in the other regime.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/fig4_shortcut.pdf}
+\caption{Sign reversal in the shortcut effect. Run probability
+by ring degree $k$ and shortcut probability $p_{\rm ws}$,
+at reserve ratio $r = 0.4$, pooled over insurance quantile
+$q \in \{0.1,\, 0.2,\, 0.3,\, 0.4\}$. At $k = 6$
+(small neighborhoods, high sampling variance), adding shortcuts
+raises run probability as long-range contagion paths dominate.
+At $k = 50$ (large neighborhoods, low sampling variance),
+shortcuts lower run probability as the information-quality
+channel dominates. The sign of the shortcut effect identifies
+which channel governs cascade susceptibility.}
+\label{fig:shortcut}
+\end{figure}
+
+Figure~\ref{fig:shortcut} displays this sign reversal directly.
+The two lines cross between $k = 10$ and $k = 50$: shortcuts are
+harmful in sparse networks and beneficial in dense ones.
+
+\paragraph{The bridge theorem is validated numerically.}
+Figures~\ref{fig:arex_small} and~\ref{fig:arex_main} plot Stochastic DD Simulation run
+probability against the insurance premium over the small-premium
+regime ($\varepsilon \in [0,\, 0.10]$) and the DD-scale regime
+($\varepsilon \in [0.50,\, 0.60]$) respectively.
+At $\varepsilon = 0$,
+run probability is 0 for all $\text{objP} \leq 0.50$---endogenous
+panic runs are absent, consistent with Theorem~\ref{thm:bridge}.
+Non-zero run probability at $\varepsilon = 0$ occurs only at high
+exogenous shock rates ($\text{objP} \geq 0.8$), where the bank is
+overwhelmed by liquidity withdrawals alone, not by strategic panic.
+Run probability increases monotonically in $\varepsilon$ at every
+level of $\text{objP}$, confirming Proposition~\ref{prop:upslope}
+numerically across the full premium range.
+
+% ===== Legacy block 2 =====
+Both models are implemented in Julia (v1.9) using
+\texttt{Distributed.jl} for parallelism across available CPU cores.
+Random seeds are set globally per parameter tuple and recorded
+alongside output. Replication code and simulation output files are
+available at \url{https://github.com/jsschuler/BankRunArchive}
+in accordance with JPE replication standards.
+
+\subsection{Stochastic DD Simulation Model}
+
+The Stochastic DD Simulation evaluates the theoretical predictions of
+Sections~\ref{sec:process}--\ref{sec:bridge}: the upward slope
+of run probability in the insurance premium, and the vanishing of
+endogenous panic runs as $\varepsilon \to 0$.
+
+\medskip
+
+\noindent\textit{Agents and endowments.}\; There are $K = 50$
+agents, each endowed symmetrically with $1/K$ units of the
+depositable good. Utility is shifted CRRA with $\rho = 1$:
+$u(c) = \log(1+c)$.
+
+\medskip
+
+\noindent\textit{Contract and withdrawal payment.}\; The insurance
+premium parameter \texttt{insur} $= \varepsilon$ and the long-asset
+return parameter \texttt{prod} $= R$ are passed at runtime. An
+agent's early withdrawal receipt is $c_1 = (1+\varepsilon)\times
+d_i$, subject to the constraint that the bank cannot pay out more
+than the current vault balance; the bank pays $\min(c_1,\,
+\text{vault})$.
+
+\medskip
+
+\noindent\textit{Exogenous phase.}\; At the start of each
+replication, the number of exogenously withdrawing agents is drawn
+from $\mathrm{Binomial}(K,\, \texttt{objP})$. The withdrawing agents
+are selected uniformly at random. The parameter \texttt{objP}
+$\in [0,1]$ is the objective probability of a liquidity shock; the
+main sweep holds \texttt{objP} fixed while varying $\varepsilon$.
+
+\medskip
+
+\noindent\textit{Endogenous activation.}\; Remaining agents are
+processed in a uniformly random sequential order (a single shuffle
+draw per replication). Each activated agent draws
+\texttt{depth} $= 100$ Monte Carlo samples to estimate the
+bank's survival probability, forming a belief over total
+withdrawals via a $\mathrm{Binomial}(K,\, \texttt{objP})$
+distribution conditioned from below on the currently observed
+withdrawal count. The agent withdraws if the estimated survival
+probability falls below the shifted-CRRA threshold.
+
+\medskip
+
+\noindent\textit{Replication.}\; Each parameter tuple is replicated
+\texttt{totResr} $= 1{,}000$ times with independent random seeds.
+The reported outcome \texttt{failProb} is the fraction of
+replications in which the vault is exhausted before all depositors
+are served.
+
+\medskip
+
+\noindent\textit{Parameter grids.}\;
+
+\smallskip
+\noindent\textit{Main sweep} ($\varepsilon \in [0.5,\, 0.6]$):
+\[
+  \texttt{insur} \in \{0.50,\, 0.55,\, 0.60\},\quad
+  \texttt{prod}  \in \{0.50,\, 0.55,\, 0.60\},\quad
+  \texttt{objP}  \in \{0.00,\, 0.05,\, \ldots,\, 1.00\}.
+\]
+Total: $3 \times 3 \times 21 = 189$ tuples; output to
+\texttt{DDData/results.csv}.
+
+\smallskip
+\noindent\textit{Small-$\varepsilon$ sweep} (bridge theorem regime):
+\[
+  \texttt{insur} \in \{0.00,\, 0.02,\, 0.04,\, 0.06,\, 0.08,\, 0.10\},\quad
+  \texttt{prod}  \in \{0.50,\, 0.55,\, 0.60\},\quad
+  \texttt{objP}  \in \{0.00,\, 0.05,\, \ldots,\, 1.00\}.
+\]
+Total: $6 \times 3 \times 21 = 378$ tuples; output to
+\texttt{DDData/results\_smallEps.csv}.
+Figures~\ref{fig:arex_small} and~\ref{fig:arex_main} in
+Section~\ref{sec:results} are constructed from these two files
+separately.
+
+\medskip
+
+\noindent\textit{Convergence validation.}\; A separate convergence
+study runs 15 parameter tuples at $K \in \{50,\, 100,\, 200\}$,
+spanning \texttt{failProb} $\in [0.01,\, 0.97]$. Below the
+equilibrium-selection threshold (\texttt{objP} $\leq 0.20$),
+\texttt{failProb} decreases monotonically toward zero as $K$ grows;
+above it (\texttt{objP} $\geq 0.25$), it converges to one. The
+two-sided convergence is consistent with the large-$K$ limit
+concentrating the Binomial draw onto a pure equilibrium. Output in
+\texttt{DDData/convergence\_results.csv}.
+
+\subsection{Network-Contagion Model}
+
+The network-contagion model evaluates cascade dynamics on a depositor
+network; its implementation details support the results of
+Section~\ref{sec:results}.
+
+\medskip
+
+\noindent\textit{Agents and deposits.}\; There are $K = 1{,}000$
+agents. Each agent $i$ has deposit $d_i$ drawn independently from
+$\mathrm{LogNormal}(\mu, \sigma)$. The deposit insurance threshold
+$\bar{d}$ is set to the $q$-th quantile of the fitted distribution;
+agents with $d_i \leq \bar{d}$ are fully insured and do not
+participate in cascade dynamics.
+
+\medskip
+
+\noindent\textit{Network.}\; The social observation network is a
+Newman--Watts--Strogatz graph \citep{newman1999renormalization}
+generated by \texttt{newman\_watts\_strogatz($K$,\,$k$,\,$p_{\rm ws}$)}
+from the Julia \texttt{Graphs.jl} package. Shortcut edges are added
+to a ring lattice with degree $k$; each candidate pair receives a
+shortcut independently with probability $p_{\rm ws}$. The lattice
+edges are retained, ensuring the graph remains connected.
+
+\medskip
+
+\noindent\textit{Exogenous phase.}\; The number of exogenously
+withdrawing agents is drawn from
+$\mathrm{Geometric}(p_0)$ truncated to $\{0,\ldots,K\}$ with
+$p_0 = 0.1$. Withdrawers are selected uniformly at random from the
+full agent set.
+
+\medskip
+
+\noindent\textit{Belief formation.}\; An agent $i$ activated when
+$\tau_i(t) = \mathrm{round}(K \cdot \hat{w}_i(t))$ agents have
+been observed to withdraw locally forms a belief:
+\[
+  W_i \;\sim\; \mathrm{Geometric}(p_0)
+  \;\big|\; W_i \;\geq\; \tau_i(t).
+\]
+The agent draws \texttt{depth} $= 1{,}000$ samples from this
+truncated distribution, simulating two scenarios per draw: (i)
+withdraw now and take the current queue position; (ii) stay. In
+each scenario the agent records whether their full deposit $d_i$
+is recovered. The resulting empirical probabilities are $\hat{p}_W$
+and $\hat{p}_S$.
+
+\medskip
+
+\noindent\textit{Decision rule.}\; Agent $i$ withdraws if and only
+if $\hat{p}_W > \hat{p}_S$. This is the pairwise safety comparison
+described in Section~\ref{sec:setup}. Note that a stored parameter
+\texttt{probThresh} $= p_0$ appears in the model struct but is not
+used in the withdrawal logic; it records the prior parameter for
+reference only.
+
+\medskip
+
+\noindent\textit{Fixed-point criterion.}\; After the exogenous
+phase, uninsured banking agents are processed in a uniformly random
+sequential order each period. Periods repeat until a complete pass
+over all banking agents produces no new withdrawals. This fixed
+point is the cascade outcome recorded as the run result.
+
+\medskip
+
+\noindent\textit{Parameter sweep (Section~\ref{sec:results}).}\;
+\[
+  r \in \{0.2,\, 0.4\},\quad
+  q \in \{0.1,\, 0.2,\, 0.3,\, 0.4\},\quad
+  k \in \{6,\, 10,\, 50\},\quad
+  p_{\rm ws} \in \{0.05,\, 0.15\}.
+\]
+Each combination is run across 50 independent initialization seeds,
+with 10 independent activation-order draws per seed, yielding
+23{,}998 total runs. Output is written to sharded CSV files
+(no headers) in \texttt{BankRunDataNew2/}. Column definitions:
+\texttt{bankRunParametersInit.csv} (seed, network parameters,
+reserve ratio, insurance quantile); \texttt{bankRunResults*.csv}
+(run key, logical outcome); \texttt{bankRunEndogenous*.csv} (key,
+agent, decision, tick-level state); \texttt{bankRunExogenous*.csv}
+(key, agent, exogenous status, tick-level state).
+

@@ -1,0 +1,141 @@
+\begin{thebibliography}{22}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem[{Acemoglu, Ozdaglar, and Tahbaz-Salehi(2015)}]{acemoglu2015systemic}
+Acemoglu, Daron, Asuman Ozdaglar, and Alireza Tahbaz-Salehi. 2015.
+\newblock \enquote{Systemic risk and stability in financial networks.}
+\newblock \emph{American Economic Review} 105~(2):564--608.
+
+\bibitem[{Allen and Gale(1998)}]{allen1998optimal}
+Allen, Franklin and Douglas Gale. 1998.
+\newblock \enquote{Optimal financial crises.}
+\newblock \emph{Journal of Finance} 53~(4):1245--1284.
+
+\bibitem[{Allen and Gale(2000)}]{allen2000financial}
+---{}---{}---. 2000.
+\newblock \enquote{Financial contagion.}
+\newblock \emph{Journal of Political Economy} 108~(1):1--33.
+
+\bibitem[{{Board of Governors of the Federal Reserve System}(2024)}]{reg_d}
+{Board of Governors of the Federal Reserve System}. 2024.
+\newblock \enquote{Regulation {D}: Reserve Requirements of Depository
+  Institutions, 12 {C.F.R.}\ \S\,204.2(c).}
+\newblock Defines time deposits and mandates minimum early withdrawal penalties
+  as a condition of that classification.
+
+\bibitem[{Bookstaber(2017)}]{bookstaber2017end}
+Bookstaber, Richard. 2017.
+\newblock \emph{The End of Theory: Financial Crises, the Failure of Economics,
+  and the Sweep of Human Interaction}.
+\newblock Princeton University Press.
+
+\bibitem[{Bryant(1980)}]{bryant1980model}
+Bryant, John. 1980.
+\newblock \enquote{A model of reserves, bank runs, and deposit insurance.}
+\newblock \emph{Journal of Banking \& Finance} 4~(4):335--344.
+
+\bibitem[{Chari and Jagannathan(1988)}]{chari1988banking}
+Chari, V.~V. and Ravi Jagannathan. 1988.
+\newblock \enquote{Banking panics, information, and rational expectations
+  equilibrium.}
+\newblock \emph{Journal of Finance} 43~(3):749--761.
+
+\bibitem[{{Consumer Financial Protection Bureau}(2024)}]{reg_dd}
+{Consumer Financial Protection Bureau}. 2024.
+\newblock \enquote{Regulation {DD}: Truth in Savings, 12 {C.F.R.}\ \S\,1030.}
+\newblock Requires disclosure of early withdrawal penalty terms prior to
+  account opening, implementing the Truth in Savings Act.
+
+\bibitem[{Cookson et~al.(2023)Cookson, Fox, Gil-Bazo, Imbet, and
+  Schiller}]{cookson2023social}
+Cookson, J.\~Anthony, Corbin Fox, Javier Gil-Bazo, Juan~Felipe Imbet, and
+  Christoph Schiller. 2023.
+\newblock \enquote{Social Media as a Bank Run Catalyst.}
+\newblock Working Paper 31166, National Bureau of Economic Research.
+
+\bibitem[{Diamond and Dybvig(1983)}]{diamond1983bank}
+Diamond, Douglas~W and Philip~H Dybvig. 1983.
+\newblock \enquote{Bank runs, deposit insurance, and liquidity.}
+\newblock \emph{Journal of political economy} 91~(3):401--419.
+
+\bibitem[{{Federal Deposit Insurance Corporation}(2024)}]{fdia_1821f}
+{Federal Deposit Insurance Corporation}. 2024.
+\newblock \enquote{Federal Deposit Insurance Act, 12 {U.S.C.}\ \S\,1821(f).}
+\newblock Governs payment of insured deposits; mandates reimbursement at par
+  value.
+
+\bibitem[{Goldstein and Pauzner(2005)}]{goldstein2005demand}
+Goldstein, Itay and Ady Pauzner. 2005.
+\newblock \enquote{Demand-deposit contracts and the probability of bank runs.}
+\newblock \emph{Journal of Finance} 60~(3):1293--1327.
+
+\bibitem[{Gorton and Metrick(2012)}]{gorton2012securitized}
+Gorton, Gary and Andrew Metrick. 2012.
+\newblock \enquote{Securitized banking and the run on repo.}
+\newblock \emph{Journal of Financial Economics} 104~(3):425--451.
+
+\bibitem[{Green, Lin et~al.(2000)}]{green2000diamond}
+Green, Edward~J, Ping Lin et~al. 2000.
+\newblock \enquote{Diamond and Dybvig's classic theory of financial
+  intermediation: what's missing?}
+\newblock \emph{Federal Reserve Bank of Minneapolis Quarterly Review}
+  24~(1):3--13.
+
+\bibitem[{Jacklin and Bhattacharya(1988)}]{jacklin1988distinguishing}
+Jacklin, Charles~J.\ and Sudipto Bhattacharya. 1988.
+\newblock \enquote{Distinguishing panics and information-based bank runs:
+  welfare and policy implications.}
+\newblock \emph{Journal of Political Economy} 96~(3):568--592.
+
+\bibitem[{Morris and Shin(1998)}]{morris1998unique}
+Morris, Stephen and Hyun~Song Shin. 1998.
+\newblock \enquote{Unique equilibrium in a model of self-fulfilling currency
+  attacks.}
+\newblock \emph{American Economic Review} 88~(3):587--597.
+
+\bibitem[{Newman and Watts(1999)}]{newman1999renormalization}
+Newman, M.~E.~J. and Duncan~J. Watts. 1999.
+\newblock \enquote{Renormalization group analysis of the small-world network
+  model.}
+\newblock \emph{Physics Letters A} 263~(4--6):341--346.
+
+\bibitem[{Peck and Shell(2003)}]{peck2003equilibrium}
+Peck, James and Karl Shell. 2003.
+\newblock \enquote{Equilibrium bank runs.}
+\newblock \emph{Journal of political Economy} 111~(1):103--123.
+
+\bibitem[{Rochet and Vives(2004)}]{rochet2004coordination}
+Rochet, Jean-Charles and Xavier Vives. 2004.
+\newblock \enquote{Coordination failures and the lender of last resort: Was
+  {Bagehot} right after all?}
+\newblock \emph{Journal of the European Economic Association} 2~(6):1116--1147.
+
+\bibitem[{{U.S.\ Securities and Exchange Commission}(2010)}]{sec_rule_22e3}
+{U.S.\ Securities and Exchange Commission}. 2010.
+\newblock \enquote{17 {C.F.R.}\ \S\,270.22e-3: Money Market Fund Redemption
+  Suspension.}
+\newblock Adopted under the Investment Company Act of 1940; authorizes money
+  market fund boards to suspend redemptions when weekly liquid assets fall
+  below 30\,\% of total assets (SEC Release No.\ IC-29132, 75 Fed.\ Reg.\
+  10060).
+
+\bibitem[{{U.S.\ Securities and Exchange
+  Commission}(2014)}]{sec_mmf_reform_2016}
+---{}---{}---. 2014.
+\newblock \enquote{Money Market Fund Reform; Amendments to Form {PF}, 79 Fed.\
+  Reg.\ 47736.}
+\newblock SEC Release No.\ IC-31166 (July 23, 2014); compliance date October
+  14, 2016; introduced floating net asset value for institutional prime and
+  municipal funds and discretionary liquidity fees and redemption gates for
+  funds whose weekly liquid assets fall below 30\,\%.
+
+\bibitem[{Watts(2002)}]{watts2002simple}
+Watts, Duncan~J. 2002.
+\newblock \enquote{A simple model of global cascades on random networks.}
+\newblock \emph{Proceedings of the National Academy of Sciences}
+  99~(9):5766--5771.
+
+\end{thebibliography}
