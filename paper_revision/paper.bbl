@@ -1,4 +1,4 @@
-\begin{thebibliography}{22}
+\begin{thebibliography}{29}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -18,6 +18,12 @@ Allen, Franklin and Douglas Gale. 1998.
 ---{}---{}---. 2000.
 \newblock \enquote{Financial contagion.}
 \newblock \emph{Journal of Political Economy} 108~(1):1--33.
+
+\bibitem[{Angeletos and Werning(2006)}]{angeletoswerning2006crises}
+Angeletos, George-Marios and Iv{\'a}n Werning. 2006.
+\newblock \enquote{Crises and prices: information aggregation, multiplicity,
+  and volatility.}
+\newblock \emph{American Economic Review} 96~(5):1720--1736.
 
 \bibitem[{{Board of Governors of the Federal Reserve System}(2024)}]{reg_d}
 {Board of Governors of the Federal Reserve System}. 2024.
@@ -61,6 +67,16 @@ Diamond, Douglas~W and Philip~H Dybvig. 1983.
 \newblock \enquote{Bank runs, deposit insurance, and liquidity.}
 \newblock \emph{Journal of political economy} 91~(3):401--419.
 
+\bibitem[{Ennis and Keister(2009)}]{ennis2009institutions}
+Ennis, Huberto~M and Todd Keister. 2009.
+\newblock \enquote{Bank runs and institutions: the perils of intervention.}
+\newblock \emph{American Economic Review} 99~(4):1588--1607.
+
+\bibitem[{Ennis and Keister(2010)}]{ennis2010fundamental}
+---{}---{}---. 2010.
+\newblock \enquote{On the fundamental reasons for bank fragility.}
+\newblock \emph{Available at SSRN 2189119} .
+
 \bibitem[{{Federal Deposit Insurance Corporation}(2024)}]{fdia_1821f}
 {Federal Deposit Insurance Corporation}. 2024.
 \newblock \enquote{Federal Deposit Insurance Act, 12 {U.S.C.}\ \S\,1821(f).}
@@ -83,6 +99,24 @@ Green, Edward~J, Ping Lin et~al. 2000.
   intermediation: what's missing?}
 \newblock \emph{Federal Reserve Bank of Minneapolis Quarterly Review}
   24~(1):3--13.
+
+\bibitem[{He and Manela(2016)}]{hemanela2016information}
+He, Zhiguo and Asaf Manela. 2016.
+\newblock \enquote{Information acquisition in rumor-based bank runs.}
+\newblock \emph{Journal of Finance} 71~(3):1113--1158.
+
+\bibitem[{Iyer and Puri(2012)}]{iyer2012understanding}
+Iyer, Rajkamal and Manju Puri. 2012.
+\newblock \enquote{Understanding bank runs: the importance of depositor-bank
+  relationships and networks.}
+\newblock \emph{American Economic Review} 102~(4):1414--1445.
+
+\bibitem[{Jacklin(1987)}]{jacklin1987demand}
+Jacklin, Charles~J. 1987.
+\newblock \enquote{Demand deposits, trading restrictions, and risk sharing.}
+\newblock In \emph{Contractual Arrangements for Intertemporal Trade},
+  \emph{Minnesota Studies in Macroeconomics}, vol.~1, edited by Edward~C.
+  Prescott and Neil Wallace. University of Minnesota Press, 26--47.
 
 \bibitem[{Jacklin and Bhattacharya(1988)}]{jacklin1988distinguishing}
 Jacklin, Charles~J.\ and Sudipto Bhattacharya. 1988.
@@ -131,6 +165,22 @@ Rochet, Jean-Charles and Xavier Vives. 2004.
   14, 2016; introduced floating net asset value for institutional prime and
   municipal funds and discretionary liquidity fees and redemption gates for
   funds whose weekly liquid assets fall below 30\,\%.
+
+\bibitem[{{U.S.\ Securities and Exchange
+  Commission}(2023)}]{sec_mmf_reform_2023}
+---{}---{}---. 2023.
+\newblock \enquote{Money Market Fund Reforms; Form {PF} Reporting Requirements
+  for Large Liquidity Fund Advisers; Technical Amendments to Form {N-CSR} and
+  Form {N-1A}, 88 Fed.\ Reg.\ 51404.}
+\newblock SEC Release No.\ IC-34959 (July 12, 2023); compliance date October 2,
+  2023; eliminated redemption gates and severed the link between discretionary
+  liquidity fees and the 30\,\% weekly-liquid-assets threshold, replacing it
+  with a mandatory liquidity fee for institutional prime and institutional
+  tax-exempt funds triggered by daily net redemptions exceeding 5\,\% of net
+  assets; the adopting release states that even though no fund imposed a fee or
+  gate in March 2020, ``the possibility of their imposition after crossing the
+  publicly disclosed 30\,\% weekly liquid asset threshold appears to have
+  contributed to investors' incentives to redeem''.
 
 \bibitem[{Watts(2002)}]{watts2002simple}
 Watts, Duncan~J. 2002.
