@@ -1286,54 +1286,42 @@ $\mathcal{N}(i)$:
   \label{eq:localrate}
 \end{equation}
 %
-Agent $i$ treats $\hat{w}_i(t)$ as representative of the global
-withdrawal rate and forms a belief about total withdrawals. Formally,
-the agent treats the total number of withdrawals as drawn from a
-Geometric distribution with parameter $p_0 = 0.1$, truncated from
-below at the locally implied count:
+Agent $i$ treats $\hat{w}_i(t)$ as a point estimate of the withdrawal
+probability among its still-banking peers, floored at the baseline
+rate $p_0$ so that an uninformative or empty neighborhood defaults to
+the baseline rather than zero:
 %
 \begin{equation}
-  \tau_i(t) \;=\; \mathrm{round}\!\left(K \cdot \hat{w}_i(t)\right)
-  \label{eq:tau}
+  \hat{p}_i(t) \;=\; \max\bigl(p_0,\, \hat{w}_i(t)\bigr)
+  \label{eq:pointestimate}
 \end{equation}
 %
+Agent $i$ forms a belief about how many of the $n_i(t)$ currently
+still-banking peers other than itself will withdraw before the
+process settles:
+%
 \begin{equation}
-  W_i \;\sim\; \mathrm{Geometric}(p_0)\;\big|\;
-  W_i \geq \tau_i(t)
+  W_i \;\sim\; \mathrm{Binomial}\bigl(n_i(t),\, \hat{p}_i(t)\bigr)
   \label{eq:belief}
 \end{equation}
 %
-The Geometric is the unique discrete memoryless distribution. Of course,
-the truncation introduces some memory but the result still holds
-approximately.
-The agent uses $\tau_i(t)$ as a lower bound on total withdrawals,
-conditioning the fixed-parameter geometric on the observed count;
-this is not Bayesian updating over $p_0$, but a restriction of the
-support given what the agent knows.
+This is a plug-in point estimate, not a posterior: it carries no
+representation of estimation uncertainty, and the floor at $p_0$
+means a single withdrawn neighbor can move $\hat{p}_i(t)$
+discontinuously rather than shrinking it gradually toward $p_0$ as
+the local sample grows.
 
-\paragraph{Belief-model qualification.} The truncated Geometric is a
-deliberately parsimonious baseline chosen for analytical tractability
-and computational transparency. It is neither a uniquely rational
-posterior nor an empirically estimated depositor belief process.
-First, the memoryless
-property means the conditional distribution of $W_i$ depends only on
-the current lower bound $\tau_i(t)$, not on the history of how that
-bound was reached; this is appropriate when agents have no memory of
-prior activation states. Second, the single parameter $p_0$ has a direct
-interpretation as the prior probability that any given agent
-withdraws, and the uniform choice $p_0 = 0.1$ for both the
-exogenous shock process and the belief prior imposes internal
-consistency between the two stochastic objects in the model. Third,
-the closed-form survival probability $p_S(x)$ derived in
-Appendix~\ref{app:abm} follows directly from the geometric's
-closed-form tail, which keeps the agent decision problem
-analytically tractable.
-
-Full Bayesian updating over the withdrawal probability $p_0$ would
-require agents to maintain and propagate a posterior distribution
-over $p_0$ at each activation step across $K = 1{,}000$ agents and
-would be substantially more demanding in the present implementation.
-The truncated Geometric is used as the tractable baseline.
+\paragraph{Belief-model qualification.} $\hat{p}_i(t)$ is a
+deliberately simple heuristic, chosen for computational directness
+across hundreds of thousands of decision draws in a 200-agent
+simulation, not as a claim that it is the unique rational or
+empirically correct belief process. Other belief laws for the same
+local information are possible, including ones with genuine posterior
+updating; this modeling choice is not asserted to be uniquely
+determined by the theory in Sections~\ref{sec:dd}
+and~\ref{sec:bridge}, which fix only the recovery-probability
+threshold compared against, not how an agent estimates the
+probabilities entering that comparison.
 
 \paragraph{Information-structure qualification.} Agents use local
 observations as a proxy for global conditions because global depositor
@@ -1389,10 +1377,16 @@ where it does not.
 
 \subsection{Activation Process}
 
-Exogenous withdrawals occur at the start of each simulation run.
-The number of exogenously withdrawing agents is drawn from a
-$\mathrm{Geometric}(p_0)$ distribution truncated to $\{0,\ldots,K\}$,
-and the withdrawing agents are selected uniformly at random.
+Exogenous withdrawals occur at the start of each simulation run. The
+number of exogenously withdrawing agents, the shock size, is a fixed
+experimental design parameter rather than a random draw; it is one of
+the swept comparative-statics dimensions reported in
+Section~\ref{sec:results} (for example, one-agent versus ten-agent
+shocks). Given the shock size, withdrawing agents are selected either
+uniformly at random across the network or via a localized rule that
+seeds the shock at one randomly chosen agent and expands outward
+through that agent's network neighbors until the target count is
+reached; both placements are compared in Section~\ref{sec:results}.
 
 Following the exogenous phase, banking agents are processed in a
 uniformly random sequential order each period. Each activated agent

@@ -211,7 +211,33 @@ function paired_recovery_payments(
     return (; withdraw_payments, stay_payments)
 end
 
-struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel}
+abstract type BeliefModel end
+
+"""
+Production default. A point estimate of the local withdrawal
+probability---the observed neighbor withdrawal fraction, floored at the
+baseline rate---is plugged directly into a Binomial for the count of
+future withdrawals. Carries no representation of estimation uncertainty.
+"""
+struct PointEstimateBelief <: BeliefModel end
+
+"""
+Alternative belief law for the robustness check described in the paper's
+belief-model qualification. Reproduces the paper's own analytical belief
+law (eqs. \\ref{eq:tau}--\\ref{eq:belief} in `paper_revision/paper.Rnw`)
+inside the simulation, instead of the ad hoc point estimate above. The
+agent treats total population-wide withdrawals as drawn from a
+`Geometric(p0)`, truncated from below at the locally implied count
+`round(K * local_rate)`, where `p0` is the scenario's baseline withdrawal
+probability (reused for both the exogenous shock process and this belief,
+exactly as the paper argues for internal consistency) and `K` is the
+total agent count. `p0` and `local_rate` are fixed, not-updated
+parameters here, exactly as in the paper's text: this is support
+truncation given what the agent locally observes, not Bayesian updating.
+"""
+struct TruncatedGeometricBelief <: BeliefModel end
+
+struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel,B<:BeliefModel}
     graph::G
     deposits::Vector{Float64}
     reserve_ratio::Float64
@@ -219,6 +245,7 @@ struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel}
     initial_withdrawals::Vector{Int}
     baseline_withdrawal_probability::Float64
     decision_draws::Int
+    belief::B
 
     function NetworkScenario(
         graph::G,
@@ -228,7 +255,8 @@ struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel}
         initial_withdrawals::AbstractVector{<:Integer},
         baseline_withdrawal_probability::Real,
         decision_draws::Integer,
-    ) where {G<:AbstractGraph,I<:DepositInsuranceModel}
+        belief::B=PointEstimateBelief(),
+    ) where {G<:AbstractGraph,I<:DepositInsuranceModel,B<:BeliefModel}
         values = Float64.(deposits)
         nv(graph) == length(values) ||
             throw(ArgumentError("graph and deposit counts must match"))
@@ -240,7 +268,7 @@ struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel}
             throw(ArgumentError("baseline probability must be in (0, 1]"))
         draws = Int(decision_draws)
         draws > 0 || throw(ArgumentError("decision_draws must be positive"))
-        new{G,I}(
+        new{G,I,B}(
             graph,
             values,
             Float64(reserve_ratio),
@@ -248,6 +276,7 @@ struct NetworkScenario{G<:AbstractGraph,I<:DepositInsuranceModel}
             initial,
             probability,
             draws,
+            belief,
         )
     end
 end
@@ -332,6 +361,40 @@ function local_withdrawal_probability(
     return max(scenario(model).baseline_withdrawal_probability, local_fraction)
 end
 
+function draw_future_withdrawal_count(
+    rng::AbstractRNG,
+    ::PointEstimateBelief,
+    model::AbstractNetworkModel,
+    state::NetworkState,
+    focal_agent::Integer,
+    eligible_count::Integer,
+)
+    probability = local_withdrawal_probability(model, state, focal_agent)
+    return rand(rng, Binomial(Int(eligible_count), probability))
+end
+
+function draw_future_withdrawal_count(
+    rng::AbstractRNG,
+    ::TruncatedGeometricBelief,
+    model::AbstractNetworkModel,
+    state::NetworkState,
+    focal_agent::Integer,
+    eligible_count::Integer,
+)
+    population = length(scenario(model).deposits)
+    already_withdrawn = population - length(state.active_agents)
+    neighbors = all_neighbors(scenario(model).graph, Int(focal_agent))
+    local_rate = isempty(neighbors) ? 0.0 :
+        count(index -> !state.banked[index], neighbors) / length(neighbors)
+    lower_bound = round(Int, population * local_rate)
+    p0 = scenario(model).baseline_withdrawal_probability
+    # By the Geometric's memorylessness, W | W >= lower_bound is
+    # distributed exactly as lower_bound + Geometric(p0) -- this reproduces
+    # eqs. \ref{eq:tau}--\ref{eq:belief} exactly, not an approximation.
+    total_belief = lower_bound + rand(rng, Geometric(p0))
+    return clamp(total_belief - already_withdrawn, 0, Int(eligible_count))
+end
+
 function sparse_sample_ranks(
     rng::AbstractRNG,
     population_size::Integer,
@@ -395,11 +458,16 @@ function subjective_withdrawal_orders(
 )
     focal = Int(focal_agent)
     eligible_count = length(state.active_agents) - 1
-    probability = local_withdrawal_probability(model, state, focal)
-    distribution = Binomial(eligible_count, probability)
     orders = Vector{Vector{Int}}(undef, scenario(model).decision_draws)
     for trial in eachindex(orders)
-        future_count = rand(rng, distribution)
+        future_count = draw_future_withdrawal_count(
+            rng,
+            scenario(model).belief,
+            model,
+            state,
+            focal,
+            eligible_count,
+        )
         orders[trial] = sparse_sample_active_agents(
             rng,
             state,

@@ -1,5 +1,6 @@
 using BankRunsFinal
 using DataFrames
+using Distributions
 using Graphs
 using Random
 using Statistics
@@ -343,6 +344,127 @@ end
         @test first == repeated
         @test first.total_withdrawals >= first.initial_withdrawals
     end
+end
+
+@testset "alternative belief laws" begin
+    graph = cycle_graph(20)
+    default_scenario = NetworkScenario(
+        graph,
+        fill(10.0, 20),
+        0.5,
+        NoDepositInsurance(),
+        [1],
+        0.05,
+        100,
+    )
+    # Omitting the belief argument must still select the production
+    # default, so every existing call site keeps its exact prior behavior.
+    @test default_scenario.belief isa PointEstimateBelief
+
+    geometric_scenario = NetworkScenario(
+        graph,
+        fill(10.0, 20),
+        0.5,
+        NoDepositInsurance(),
+        [1],
+        0.5,
+        100,
+        TruncatedGeometricBelief(),
+    )
+    @test geometric_scenario.belief isa TruncatedGeometricBelief
+
+    comparative = ComparativeNetworkModel(default_scenario)
+    state = NetworkState(default_scenario.deposits, default_scenario.reserve_ratio)
+    BankRunsFinal.withdraw!(state, 1)
+    eligible_count = length(state.active_agents) - 1
+
+    # PointEstimateBelief must draw from the exact pre-existing Binomial:
+    # same distribution, so a fixed seed reproduces the same draw.
+    probability = BankRunsFinal.local_withdrawal_probability(comparative, state, 2)
+    @test BankRunsFinal.draw_future_withdrawal_count(
+        Xoshiro(7),
+        PointEstimateBelief(),
+        comparative,
+        state,
+        2,
+        eligible_count,
+    ) == rand(Xoshiro(7), Binomial(eligible_count, probability))
+
+    # draw_future_withdrawal_count is a pure function of its rng argument.
+    geometric_comparative = ComparativeNetworkModel(geometric_scenario)
+    @test BankRunsFinal.draw_future_withdrawal_count(
+        Xoshiro(11),
+        TruncatedGeometricBelief(),
+        geometric_comparative,
+        state,
+        2,
+        eligible_count,
+    ) == BankRunsFinal.draw_future_withdrawal_count(
+        Xoshiro(11),
+        TruncatedGeometricBelief(),
+        geometric_comparative,
+        state,
+        2,
+        eligible_count,
+    )
+
+    # With no neighbor observations and no prior withdrawals, the locally
+    # implied lower bound is zero, so by the Geometric's memorylessness
+    # the draw is exactly Geometric(p0): its empirical mean should match
+    # (1 - p0) / p0 (using a large eligible_count so clamping is negligible).
+    fresh_state = NetworkState(fill(10.0, 20), 0.5)
+    p0 = 0.5
+    unconditioned_scenario = NetworkScenario(
+        cycle_graph(20),
+        fill(10.0, 20),
+        0.5,
+        NoDepositInsurance(),
+        Int[],
+        p0,
+        100,
+        TruncatedGeometricBelief(),
+    )
+    unconditioned_model = ComparativeNetworkModel(unconditioned_scenario)
+    rng = Xoshiro(2026)
+    draws = [
+        BankRunsFinal.draw_future_withdrawal_count(
+            rng,
+            TruncatedGeometricBelief(),
+            unconditioned_model,
+            fresh_state,
+            1,
+            50,
+        )
+        for _ in 1:20_000
+    ]
+    @test all(0 .<= draws .<= 50)
+    @test isapprox(mean(draws), (1 - p0) / p0; atol=0.1)
+
+    # A high locally observed withdrawal rate scaled up to the full
+    # population can imply more eventual withdrawals than currently
+    # remain eligible; the belief must clamp rather than overflow.
+    saturated_state = NetworkState(fill(10.0, 20), 0.5)
+    BankRunsFinal.withdraw!(saturated_state, 2)
+    BankRunsFinal.withdraw!(saturated_state, 20)
+    saturated_eligible = length(saturated_state.active_agents) - 1
+    saturated_draws = [
+        BankRunsFinal.draw_future_withdrawal_count(
+            rng,
+            TruncatedGeometricBelief(),
+            geometric_comparative,
+            saturated_state,
+            1,
+            saturated_eligible,
+        )
+        for _ in 1:100
+    ]
+    @test all(==(saturated_eligible), saturated_draws)
+
+    geometric_model = ComparativeNetworkModel(geometric_scenario)
+    first = run_network_model(geometric_model, RunSeed(88))
+    repeated = run_network_model(geometric_model, RunSeed(88))
+    @test first == repeated
+    @test first.total_withdrawals >= first.initial_withdrawals
 end
 
 @testset "small-object and large-sparse execution parity" begin

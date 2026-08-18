@@ -579,3 +579,84 @@ superseded by the 2026-07-24 entry below.
   targeted allocation comparison. Participation is identical across shifts;
   exact deposit agreement is at least 85 percent in every rho-premium group;
   and the largest within-cell deposit difference is 100.
+
+## 2026-08-12: Alternative belief-law robustness check
+
+- Motivation: the belief-model qualification paragraph in `paper.Rnw` asserts
+  the truncated-Geometric belief used by the theorem-facing analytical model
+  is "a tractable baseline, not a claim of uniqueness," but that claim was
+  never checked against the production network simulation, which instead
+  uses an unrelated, ad hoc point-estimate mechanism
+  (`local_withdrawal_probability`: `max(baseline, local_fraction)` plugged
+  into a Binomial). This is a real internal-consistency gap between the
+  theorem's belief law and the simulation's belief law, not merely a
+  hypothetical robustness concern.
+- Added `src/network.jl` support for pluggable belief laws via ordinary
+  multiple dispatch, no conditional branching on belief type anywhere:
+  `abstract type BeliefModel end`, `PointEstimateBelief` (wraps the existing
+  mechanism unchanged), and `TruncatedGeometricBelief` (reproduces the
+  paper's own eqs.~\ref{eq:tau}--\ref{eq:belief} exactly: `W ~ Geometric(p0)
+  | W >= round(K * local_rate)`, sampled exactly via the Geometric's
+  memorylessness as `round(K * local_rate) + Geometric(p0)`, then converted
+  to a future-withdrawal count among currently eligible agents). Dispatch
+  function is `draw_future_withdrawal_count(rng, belief, model, state,
+  focal_agent, eligible_count)`. `NetworkScenario` gained an optional
+  `belief` field defaulting to `PointEstimateBelief()`, so every existing
+  call site is unchanged; full 213-test suite passed unmodified before 9 new
+  belief-law tests were added (222 total).
+- An initial attempt used a Beta-Binomial posterior-predictive belief
+  (a genuine Bayesian prior/posterior over the withdrawal probability) as
+  the alternative. This was the wrong comparison: neither the paper's
+  theorem nor the simulation has any notion of a prior over a probability
+  parameter anywhere; introducing one manufactures a new mechanism rather
+  than testing an existing one. Replaced with `TruncatedGeometricBelief`,
+  which uses only the paper's own already-stated belief law.
+- First attempt at the comparison reused `baseline_withdrawal_probability =
+  0.02` (tuned for the point-estimate mechanism's Binomial, whose mean
+  scales as `n * p`) as the Geometric's `p0`. Since `Geometric(p0)`'s mean
+  is `(1-p0)/p0`, independent of population size, this produced a
+  population-invariant mean excess-belief of 49 withdrawals against a
+  200-agent network -- every one of 120 scenarios failed deterministically
+  under every decision rule. Corrected to `p0 = 0.1`, the value the paper's
+  own analytical section actually states for this belief law.
+- `scripts/run_belief_robustness.jl` (new) reruns the existing
+  common-scenario validation design (Watts--Strogatz(200,10,0.10), reserve
+  ratios 0.20/0.30/0.40, initial withdrawal counts 1 and 3, all three
+  decision rules) under both belief laws at matched seeds. Result, at 100
+  replications per cell (600 matched scenario-rule pairs per belief law)
+  and confirmed reproducible across two independent top-level seeds
+  (20260812 and 20260813) with non-overlapping 95% Wilson intervals:
+  - The reserve-ratio failure gradient is monotonically decreasing under
+    both belief laws (point estimate: ~44% / ~5-6% / ~0%; truncated
+    geometric: ~81-85% / ~41% / ~33-34%, at r=0.20/0.30/0.40). This
+    comparative static is robust to belief-law choice.
+  - Cross-decision-rule agreement is not: all three rules agree on
+    72.5-72.7% of scenarios under the point-estimate belief (roughly in
+    line with the paper's already-reported common-scenario validation
+    figures), but only 16.0-20.0% under the truncated-Geometric belief the
+    theorem actually uses.
+  - The collapse is concentrated in the `comparative` (`RelativeSafety`)
+    rule, whose failure rate rises from ~34.6% under the point estimate to
+    100.0% [99.4, 100.0] under the truncated Geometric in both seeds --
+    effectively deterministic saturation, not noise. `threshold` and
+    `explicit_utility` shift less (7.2%->16-20% and 7.5-7.8%->39.5-40.3%).
+    This sharpens a pattern the paper already reports elsewhere (the
+    comparative rule is the most sensitive of the three) rather than
+    introducing a new one.
+  - Matched agreement between the two belief laws on the same
+    scenario/rule pair is 63.3-64.3% [61-67%] -- well below the >95%
+    agreement figures reported for cross-decision-rule comparisons under a
+    single belief law.
+- Conclusion: the paper's "mechanism robustness across three decision
+  rules" claim holds under the point-estimate belief actually implemented,
+  but does not hold under the belief law the theorem itself uses. The
+  reserve-ratio comparative static appears robust to this choice; the
+  cross-rule agreement claim does not. Not yet reflected in the manuscript
+  text -- open decision on how (or whether) to qualify the relevant claims
+  in `paper.Rnw`.
+- Code and tests are in place and committed-ready
+  (`src/network.jl`, `src/BankRunsFinal.jl`,
+  `scripts/run_belief_robustness.jl`, `test/runtests.jl`); raw output is
+  `output/belief_robustness_seed20260812.csv` and
+  `output/belief_robustness_seed20260813.csv` (gitignored, reproducible via
+  `julia --project=. scripts/run_belief_robustness.jl <seed> <path>`).
