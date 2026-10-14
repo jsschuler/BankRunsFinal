@@ -288,57 +288,41 @@ artifact.
 The indeterminacy of equilibrium selection in DD---which of two equilibria obtains is determined by an exogenous 
 sunspot---motivated a literature on equilibrium selection through information heterogeneity.
 
-% here
+\citet{morris1998unique} show that heterogeneous private informtion allow to unique equilibria in coordination games. 
+This result was then applied to bank runs in \citet{goldstein2005demand}. They provide a unique equilibrium where depositors
+withdraw based on a signal below a threshold; a framework \citet{rochet2004coordination} extend to coordination failures
+among banks. These thresholds are similar to the ones present in the models presented in this paper though the information structure differs.
 
-\citet{morris1998unique} showed that small amounts of heterogeneous private information eliminate multiplicity in 
-coordination games, yielding a unique threshold equilibrium.
+Goldstein and Pauzner's threshold involves a private signal of fundamental soundness. In the models considered here, 
+agents do not observe fundamentals directly but rather form beliefs based on local withdrawal behavior. The bridge theorem
+connects the classic Diamond-Dybvig setting to the models offered here.
 
-\citet{goldstein2005demand} applied this global-games methodology directly to bank runs, deriving a unique equilibrium 
-in which depositors withdraw when their private signal about asset quality falls below a threshold $p^*$.
+As the the frameworks model distinct information environments, they should be seen as complements. Global games
+are useful when depositors hold private information about fundamentals. The model here, like Diamond-Dybig
+wishes to focus on run equilibria the result from expectations; self-fulfilling property equilibria. 
 
-\citet{rochet2004coordination} extended the framework to interbank coordination failures.
+The current paper also connects to the literature on the impact of social networks; particularly social media on bankruns. 
+Silicon Valley Bank's depositors held neither insured deposits nor had any private information on its fundamentals. 
+\citet{cookson2023social} report a plausible (Granger) causal relationship between social media activity and deposit outflows.
+This does not establish a channel though the results are consistent with what might be expected if social media is an important causal channel. 
+Complimentary is \citet{iyer2012understanding} which provides non-crisis evidence for the same pattern. They find that in depositor level bank
+data from India, depositors who observe withdrawals are more likely to withdraw themselves.
 
-The global-games threshold is formally related to the threshold $p^*(\rho, R)$ of our bridge theorem, but the 
-economic content and information structure differ.
-
-In Goldstein and Pauzner, $p^*$ is a cutoff on a private signal about the bank's fundamental soundness; in our model 
-it is the limit of rational CRRA expected utility as the insurance premium vanishes, and agents hold no private 
-fundamental signal---they form beliefs from locally observed withdrawal behavior.
-
-The two frameworks are better understood as complementary than competing, because they model different 
-information environments.
-
-Global games apply when depositors hold private signals about bank fundamentals---asset quality, reserve adequacy, 
-managerial competence---and coordinate on a unique equilibrium through the noise in those signals.
-
-Our model applies when depositors lack such private fundamental information and instead rely entirely on observation 
-from their local network.
-
-SVB depositors held standard uninsured commercial deposits with no private window into the bank's bond portfolio.
-\citet{cookson2023social} report that measures of social-media activity in SVB-connected venture-capital and startup networks precede and predict deposit outflows in Granger-causality tests.
-This temporal predictive relationship is consistent with depositors responding to information circulating through their networks, but it does not by itself identify a structural causal channel.
-\citet{iyer2012understanding} provide complementary, non-crisis evidence for the same premise using depositor-level Indian bank data: depositors who observe a co-depositor's early withdrawal are more likely to withdraw themselves, and this network effect is distinct from and additive to fundamentals-based inference.
-The two information structures are empirically distinguishable and call for different models.
-
-The distinct information structures correspond to distinct predictions.
-In standard global-games applications, run risk is governed by fundamentals and private-signal precision.
-In our model, conditional run risk also varies with the depositor observation network.
-The baseline assumes that network position is independent of deposit size; this restriction is testable with depositor-level supervisory data.
-Information timing, sequenced redemption, and temporary suspension also act directly on the observability margin in our model.
-Such interventions can be represented in richer global-games environments---\citet{angeletoswerning2006crises} show that endogenous public information from prices can itself generate multiplicity and excess volatility in a global-games setting, so the literature does have a policy margin operating through signal precision and publicity.
-That margin is nonetheless distinct from ours: it operates on the precision or publicity of an exogenous private signal, whereas our margin operates on whether an endogenous individual action---a withdrawal---is observable at all, and to whom.
-The two are related but not the same lever, and neither is absent from the literature.
+The models offered in the present paper are regarded as a useful baseline. Natural extensions involve adding in private information on bank fundamentals. The same modeling 
+framework can also be used to generalize some of the global games findings. The most original aspect of the present paper is to introduce the depositor observatin network 
+as a major factor. An additionak related paper of interest is \citet{angeletoswerning2006crises} where information from price alone can generate multiple equilibria and volatility.
+This differs from the present paper in that our externally observable signal is deposit withdrawal. Prices do not enter into the present paper. 
 
 \paragraph{Information-based runs and rational inference.}
-A parallel strand treats bank runs as consequences of rational inference from partial signals.
-\citet{jacklin1988distinguishing} distinguished information-based runs, in which withdrawals reflect genuine adverse information about asset quality, from panic-based runs driven purely by coordination failure.
-\citet{chari1988banking} constructed an equilibrium in which depositors observe the withdrawal queue length and update beliefs about asset quality, producing runs as rational cascades rather than sunspot phenomena.
-\citet{hemanela2016information} model a related but distinct inference channel: depositors decide whether to pay a cost to verify a rumor about bank solvency, so information acquisition itself is endogenous and strategic.
-Our mechanism does not involve costly verification or rumors about fundamentals; agents instead observe realized withdrawal decisions directly from network neighbors at no cost, and the object they are uncertain about is the unobserved withdrawal count, not asset quality.
-Our model is closest to this literature and extends the inference logic to a network setting: agents observe withdrawal rates among network neighbors and update beliefs about the global withdrawal distribution.
-The mechanism---extrapolation from a partial signal producing cascades---is in this tradition.
-What is novel is the information structure (local network sampling rather than queue position) and its implication that cascade susceptibility depends on neighborhood degree through a local-sample-quality channel and on shortcut density through information transmission.
+A distinct branch of the literature, also closely related to the present paper, treats runs as rational actions based on partial information. 
+\citet{jacklin1988distinguishing} introduced information-based runs where withdrawals reflect genuine adverse information about asset quality as opposed to
+panic-based runs. More closely related to the present paper is
+\citet{chari1988banking} where depositors observe the withdrawal queue length and update beliefs about asset quality. Runs can then be rational cascades rather than sunspot phenomena.
+\citet{hemanela2016information} model a related but distinct inference channel: 
+depositors may acquire information about solvency at a cost. Thus, the information environment is endogenized. In our model, agents are uncertain only
+about how much has been withdrawn but it is nonetheless closest to this branch of the literature. 
 
+% here 
 \paragraph{Financial networks and cascade models.}
 \citet{allen1998optimal} characterized efficient responses to aggregate liquidity shocks in a banking system and showed that market incompleteness can generate inefficient crises.
 \citet{allen2000financial} introduced balance-sheet network contagion, showing that interbank credit linkages propagate localized shocks across the system and that incomplete networks are more contagion-prone than complete ones under moderate shocks.
